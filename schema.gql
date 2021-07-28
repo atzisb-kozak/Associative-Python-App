@@ -1,0 +1,45 @@
+input CreateEchantionnageInput {
+  poidsGenerated: Float!
+  poidsMeasured: Float!
+}
+
+input CreateSachetInput {
+  combinaison: [Float!]!
+  poids: Float!
+}
+
+scalar DateTime
+
+type Echantionnage {
+  created_at: DateTime!
+  echantionNumber: ID!
+  poidsGenerated: Float!
+  poidsMeasured: Float!
+  updated_at: DateTime!
+}
+
+type Mutation {
+  createEchantionnage(echantillon: CreateEchantionnageInput!): Echantionnage!
+  createSachet(data: CreateSachetInput!): Sachet!
+  deleteSachet(sachetID: ID!): Boolean!
+  updateSachet(data: UpdateSachetInput!, sachetID: ID!): Boolean!
+}
+
+type Query {
+  echantionnage: [Echantionnage!]!
+  sachet: [Sachet!]!
+  sachetID(sachetID: ID!): Sachet!
+}
+
+type Sachet {
+  combinaison: [Float!]
+  created_at: DateTime!
+  id: ID!
+  poids: Float!
+  updated_at: DateTime!
+}
+
+input UpdateSachetInput {
+  combinaison: [Float!]!
+  poids: Float!
+}
