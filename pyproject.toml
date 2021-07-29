@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "associative_pythonapi"
+version = "0.1.0"
+description = "Python API for associative embedded machine"
+authors = ["atzisb-kozak"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+gino = "^1.0.1"
+ariadne = "^0.13.0"
+uvicorn = "^0.14.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+poethepoet = "^0.10.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poe.tasks]
+test= "pytest"
+run = "python src/app.py"
