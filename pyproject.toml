@@ -7,9 +7,12 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-gino = "^1.0.1"
 ariadne = "^0.13.0"
 uvicorn = "^0.14.0"
+fastapi = "^0.68.0"
+tortoise-orm = {extras = ["asyncpg"], version = "^0.17.6"}
+gpiozero = "^1.6.2"
+
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
