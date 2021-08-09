@@ -1,45 +1,53 @@
 input CreateEchantionnageInput {
-  poidsGenerated: Float!
-  poidsMeasured: Float!
+	poidsGenerated: Int!
+	poidsMeasured: Int!
 }
 
 input CreateSachetInput {
-  combinaison: [Float!]!
-  poids: Float!
+	combinaison: [Int!]!
+	poids: Int!
 }
 
 scalar DateTime
 
 type Echantionnage {
-  created_at: DateTime!
-  echantionNumber: ID!
-  poidsGenerated: Float!
-  poidsMeasured: Float!
-  updated_at: DateTime!
+	created_at: DateTime!
+	echantionNumber: ID!
+	poidsGenerated: Int!
+	poidsMeasured: Int!
+	updated_at: DateTime!
 }
 
 type Mutation {
-  createEchantionnage(echantillon: CreateEchantionnageInput!): Echantionnage!
-  createSachet(data: CreateSachetInput!): Sachet!
-  deleteSachet(sachetID: ID!): Boolean!
-  updateSachet(data: UpdateSachetInput!, sachetID: ID!): Boolean!
+	createEchantionnage(echantillon: CreateEchantionnageInput!): Echantionnage!
+	createSachet(data: CreateSachetInput!): Sachet!
+	deleteEchantionnage(echantionID: ID!): Boolean!
+	deleteSachet(sachetID: ID!): Boolean!
+	updateEchantionnage(echantillon: UpdateEchantionnageInput!, echantionID: ID!): Boolean!
+	updateSachet(data: UpdateSachetInput!, sachetID: ID!): Boolean!
 }
 
 type Query {
-  echantionnage: [Echantionnage!]!
-  sachet: [Sachet!]!
-  sachetID(sachetID: ID!): Sachet!
+	echantionnage: [Echantionnage!]!
+	echantionnageID(echantionID: ID!): Echantionnage!
+	sachet: [Sachet!]!
+	sachetID(sachetID: ID!): Sachet!
 }
 
 type Sachet {
-  combinaison: [Float!]
-  created_at: DateTime!
-  id: ID!
-  poids: Float!
-  updated_at: DateTime!
+	combinaison: [Int!]
+	created_at: DateTime!
+	id: ID!
+	poids: Int!
+	updated_at: DateTime!
+}
+
+input UpdateEchantionnageInput {
+	poidsGenerated: Int!
+	poidsMeasured: Int!
 }
 
 input UpdateSachetInput {
-  combinaison: [Float!]!
-  poids: Float!
+	combinaison: [Int!]!
+	poids: Int!
 }
