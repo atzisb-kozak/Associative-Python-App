@@ -1,0 +1,22 @@
+{
+	"connections": {
+		"default": {
+			"engine": "tortoise.backends.asyncpg",
+			"credentials": {
+				"host": "localhost",
+				"port": "5432",
+				"user": "user",
+				"password": "resu",
+				"database": "test"
+			}
+		}
+	},
+	"apps": {
+		"app": {
+			"models": ["database.models"],
+			"default_connection": "default"
+		}
+	},
+	"use_tz": true,
+	"timezone":"UTC"
+}

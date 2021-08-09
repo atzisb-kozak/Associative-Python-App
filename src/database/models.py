@@ -3,6 +3,12 @@ from .arrayfield import ArrayField
 from tortoise import fields
 
 class Sachet(Model):
+	"""
+	Sachet Models for Tortoise ORM 
+
+	Use to retrieve and store Sachet data into postgres
+
+	"""
 	__tablename__ = 'sachet'
 	id = fields.IntField(pk=True)
 	poids = fields.IntField()
@@ -20,6 +26,12 @@ class Sachet(Model):
 		))
 
 class Echantionnage(Model):
+	"""
+	Echantionnage Models for Tortoise ORM 
+
+	Use to retrieve and store Echantionnage data into postgres
+	Using to calibrate peson
+	"""
 	__tablename__ = 'echantionnage'
 	echantionNumber = fields.IntField(pk=True)
 	poidsGenerated = fields.IntField()
