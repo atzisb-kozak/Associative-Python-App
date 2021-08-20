@@ -1,9 +1,8 @@
 from typing import List
 from ariadne import QueryType, MutationType, ScalarType, convert_kwargs_to_snake_case
 from .models import Sachet, Echantionnage
+from .payload import SachetPayload, EchantionnagePayload
 from tortoise import timezone
-from datetime import datetime
-import json
 
 datetime_scalar = ScalarType("DateTime")
 queries = QueryType()
@@ -43,6 +42,103 @@ async def resolve_echantionnageID(*_, echantion_id: int) -> Echantionnage:
 	"""
 	return await Echantionnage.get_or_none(echantionNumber=echantion_id)
 
+@mutations.field('createEchantionnage')
+@convert_kwargs_to_snake_case
+async def resolve_create_echantionnage(*_, echantillon) -> EchantionnagePayload:
+	""" Create new Echantionnage data and store into database
+
+	Args:
+			echantillon ([type]): Echantionnage's input
+
+	Returns:
+			Echantionnage: Data stored into
+	"""
+	try:
+		echantionnage = await Echantionnage.create(
+			poidsMeasured = echantillon['poids_measured'],
+			poidsGenerated = echantillon['poids_generated'],
+		)
+		return dict(
+			success = True,
+			data = echantionnage,
+			error = None
+		)
+	except Exception as error:
+		return dict(
+			success = False,
+			data = None,
+			error = error.args
+		)
+
+@mutations.field('updateEchantionnage')
+@convert_kwargs_to_snake_case
+async def resolve_update_echantionnage(*_, echantion_id: int, echantillon) -> EchantionnagePayload:
+	""" Get and update existing Echantionnage data stored
+
+	Args:
+			echantion_id (int): Echantionnage's data unique ID 
+			echantillon ([type]): update data
+
+	Returns:
+			bool: result state if operation success or fail
+	"""
+	try:
+		echantion = await Echantionnage.get_or_none(echantionNumber=echantion_id)
+		if echantion is not None:
+			echantion.update(
+				poidsMeasured = echantillon['poids_measured'],
+				poidsGenerated = echantillon['poids_generated']
+			)
+			return dict(
+				success = True,
+				data = None,
+				error = None,
+			)
+		else:
+			return dict(
+				success = False,
+				data = None,
+				error = 'Data doesn\'t exist in database',
+			)
+	except Exception as error:
+		return dict(
+			success = False,
+			data = None,
+			error = error.args
+		)
+
+@mutations.field('deleteEchantionnage')
+@convert_kwargs_to_snake_case
+async def resolve_delete_echantionnage(*_, echantion_id: int) -> EchantionnagePayload:
+	""" Deletting existing Echantionnage's data stored in database
+
+	Args:
+			echantion_id (int): Echantionnage's data unique ID
+
+	Returns:
+			bool: result state if operation success or fail
+	"""
+	try: 
+		echantillon = await Echantionnage.delete(echantionNumber=echantion_id)
+		if echantillon is not None:
+			return dict(
+				success = True,
+				data = None,
+				error = None
+			)
+		else:
+			return dict(
+				success = False,
+				data = None,
+				error = 'Data doesn\'t exist in database'
+			)
+	except Exception as error: 
+		return dict(
+			success = False,
+			data = None,
+			error = error.args,
+		)
+
 @queries.field('sachet')
 async def resolve_sachet(_, info) -> List[Sachet]:
 	"""Fetch all Sachet's data from the database
@@ -76,7 +172,7 @@ async def resolve_sachetID(*_, sachet_id: int) -> Sachet:
 	return result
 
 @mutations.field('createSachet')
-async def resolve_create_sachet(*_, data) -> Sachet:
+async def resolve_create_sachet(*_, data) -> SachetPayload:
 	"""[summary] Create Sachet data and stored in database
 
 	Args:
@@ -85,19 +181,28 @@ async def resolve_create_sachet(*_, data) -> Sachet:
 	Returns:
 		Sachet: Sachet's data
 	"""
-	data['combinaison'] = ','.join([str(number) for number in data['combinaison']])
-	sachet = await Sachet.create(
-		poids=data['poids'],
-		combinaison=data['combinaison'],
-		created_at=datetime.now(tz=None),
-		updated_at=datetime.now(tz=None),
-	)
-	sachet.combinaison = list(map(int, str(sachet.combinaison).split(',')))
-	return sachet
+	try:
+		data['combinaison'] = ','.join([str(number) for number in data['combinaison']])
+		sachet = await Sachet.create(
+			poids=data['poids'],
+			combinaison=data['combinaison'],
+		)
+		sachet.combinaison = list(map(int, str(sachet.combinaison).split(',')))
+		return dict(
+			success = True,
+			data = sachet,
+			error = None
+		)
+	except Exception as error:
+		return dict(
+			success = False,
+			data = None,
+			error = error.args
+		)
 
 @mutations.field('updateSachet')
 @convert_kwargs_to_snake_case
-async def resolve_update_sachet(*_,sachet_id: int, data) -> bool:
+async def resolve_update_sachet(*_,sachet_id: int, data) -> SachetPayload:
 	"""[summary] Update existing Sachet's data into database
 
 	Args:
@@ -107,16 +212,31 @@ async def resolve_update_sachet(*_,sachet_id: int, data) -> bool:
 	Returns:
 		bool: return state if operation success or failed
 	"""
-	sachet = await Sachet.get_or_none(id=sachet_id)
-	if sachet is not None:
-		sachet.update(poids=data['poids'], combinaison=data['combinaison'])
-		return True
-	else:
-		return False
+	try:
+		sachet = await Sachet.get_or_none(id=sachet_id)
+		if sachet is not None:
+			sachet.update(poids=data['poids'], combinaison=data['combinaison'])
+			return dict(
+				success = True,
+				data = None,
+				error = None
+			)
+		else:
+			return dict(
+				success = False,
+				data = None,
+				error = 'Data doesn\'t exist in database'
+			)
+	except Exception as error:
+		return dict(
+			success = False,
+			data = None,
+			error = error.args
+		)
 
 @mutations.field('deleteSachet')
 @convert_kwargs_to_snake_case
-async def resolve_delete_sachet(_, info, sachet_id) -> bool:
+async def resolve_delete_sachet(_, info, sachet_id) -> SachetPayload:
 	"""[summary] Delete existing Sachet data into database
 
 	Args:
@@ -124,5 +244,23 @@ async def resolve_delete_sachet(_, info, sachet_id) -> bool:
 	Returns:
 		bool: return state if operation success or failed
 	"""
-	sachet = await Sachet.delete(id=sachet_id)
-	return sachet is not None
+	try:
+		sachet = await Sachet.delete(id=sachet_id)
+		if sachet is not None:
+			return dict(
+				success = True,
+				data = None,
+				error = None,
+			)
+		else:
+			return dict(
+				success = False,
+				data = None,
+				error = 'Data doesn\'t exist in database'
+			)
+	except Exception as error:
+		return dict(
+			success = False,
+			data = None,
+			error = error
+		)

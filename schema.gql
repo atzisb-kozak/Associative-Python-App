@@ -19,19 +19,19 @@ type Echantionnage {
 }
 
 type Mutation {
-	createEchantionnage(echantillon: CreateEchantionnageInput!): Echantionnage!
-	createSachet(data: CreateSachetInput!): Sachet!
-	deleteEchantionnage(echantionID: ID!): Boolean!
-	deleteSachet(sachetID: ID!): Boolean!
-	updateEchantionnage(echantillon: UpdateEchantionnageInput!, echantionID: ID!): Boolean!
-	updateSachet(data: UpdateSachetInput!, sachetID: ID!): Boolean!
+	createEchantionnage(echantillon: CreateEchantionnageInput!): EchantionnagePayload!
+	createSachet(data: CreateSachetInput!): SachetPayload!
+	deleteEchantionnage(echantionID: ID!): EchantionnagePayload!
+	deleteSachet(sachetID: ID!): SachetPayload!
+	updateEchantionnage(echantillon: UpdateEchantionnageInput!, echantionID: ID!): EchantionnagePayload!
+	updateSachet(data: UpdateSachetInput!, sachetID: ID!): SachetPayload!
 }
 
 type Query {
 	echantionnage: [Echantionnage!]!
-	echantionnageID(echantionID: ID!): Echantionnage!
+	echantionnageID(echantionID: ID!): Echantionnage
 	sachet: [Sachet!]!
-	sachetID(sachetID: ID!): Sachet!
+	sachetID(sachetID: ID!): Sachet
 }
 
 type Sachet {
@@ -50,4 +50,16 @@ input UpdateEchantionnageInput {
 input UpdateSachetInput {
 	combinaison: [Int!]!
 	poids: Int!
+}
+
+type SachetPayload {
+	success: Boolean!
+	data: Sachet
+	error: String
+}
+
+type EchantionnagePayload {
+	success: Boolean!
+	data: Echantionnage
+	error: String
 }
